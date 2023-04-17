@@ -1,47 +1,43 @@
-class MinStack {
-  store = [];
-  min;
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function (s) {
+  const stack = [];
 
-  /**
-   * @param {number} val
-   * @return {void}
-   */
-  push(val) {
-    this.min ??= val;
-    this.min = Math.min(val, this.min);
-    this.store.push(val);
-  }
+  const open = {
+    "(": ")",
+    "{": "}",
+    "[": "]",
+  };
+  const close = {
+    ")": "(",
+    "}": "{",
+    "]": "[",
+  };
 
-  /**
-   * @return {void}
-   */
-  pop() {
-    const val = this.store.pop();
-    if (val == this.min) {
-      this.min = Math.min(...this.store);
+  for (let i = 0; i < s.length; i++) {
+    const b = s[i];
+    const isClose = Boolean(close[b]);
+
+    if (isClose) {
+      if (stack.length) {
+        const last = stack.pop();
+        if (open[last] != b) {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      stack.push(b);
     }
   }
 
-  /**
-   * @return {number}
-   */
-  top() {
-    return this.store.at(-1);
-  }
+  return !stack.length;
+};
 
-  /**
-   * @return {number}
-   */
-  getMin() {
-    return this.min;
-  }
-}
+const s = "()[]}";
 
-/**
- * Your MinStack object will be instantiated and called as such:
- * var obj = new MinStack()
- * obj.push(val)
- * obj.pop()
- * var param_3 = obj.top()
- * var param_4 = obj.getMin()
- */
+const res = isValid(s);
+console.log("🚀 ~ file: index.js:43 ~ res:", res);
