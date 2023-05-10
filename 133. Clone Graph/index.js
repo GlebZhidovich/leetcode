@@ -28,24 +28,24 @@ var cloneGraph = function (node) {
 
     next.forEach((node) => {
       if (!visited.has(node.val)) {
-        visited.set(node.val, new Node(node.val, [...node.neighbors]));
-      }
+        const neighbors = [];
+        const newNode = new Node(node.val, neighbors);
+        visited.set(node.val, newNode);
 
-      node.neighbors.forEach((neighbor) => {
-        if (!visited.has(neighbor.val)) {
-          newNext.push(neighbor);
-        }
-      });
+        node.neighbors.forEach((neighbor) => {
+          const prev = visited.get(neighbor.val);
+          if (prev) {
+            prev.neighbors.push(newNode);
+            neighbors.push(prev);
+          } else {
+            newNext.push(neighbor);
+          }
+        });
+      }
     });
 
     next = newNext.length ? newNext : null;
   }
-
-  visited.forEach((node) => {
-    for (let index = 0; index < node.neighbors.length; index++) {
-      node.neighbors[index] = visited.get(node.neighbors[index].val);
-    }
-  });
 
   return visited.get(first);
 };

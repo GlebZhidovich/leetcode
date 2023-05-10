@@ -95,3 +95,37 @@ const queue = Queue.channels(1)
 for (let i = 0; i < 3; i++) {
   queue.add({ name: `Task${i}`, interval: i * 1000 });
 }
+
+function parallelLimit(urls, limit, callback) {
+  const result = [];
+  let count = 0;
+  let q = [];
+
+  function next() {
+    if (result.length === urls.length) {
+      callback(result);
+    } else {
+      if (q.length) {
+        const obj = q.shift();
+        add(obj.url, obj.idx);
+      }
+    }
+  }
+
+  function add(url, idx) {
+    if (count < limit) {
+      count++;
+      fetch(url).then((val) => {
+        count--;
+        result[idx] = val;
+        next();
+      });
+    } else {
+      q.push({ url, idx });
+    }
+  }
+
+  urls.forEach((url, i) => {
+    add(url, i);
+  });
+}
