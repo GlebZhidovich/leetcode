@@ -1,44 +1,37 @@
-function isSymmetric(root) {
-  if (!root.left && !root.right) {
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isSymmetric = function (root) {
+  let left = [root.left];
+  let right = [root.right];
+
+  let i = 0;
+
+  if (root.left === null && root.right === null) {
     return true;
   }
 
-  let tree = [[[root.left], [root.right]]];
-
-  for (let index = 0; index < tree.length; ) {
-    const [left, right] = tree[index];
-    if (left.length != right.length) {
-      return false;
+  while (left[i]?.val === right[i]?.val) {
+    if (left[i] === undefined) {
+      return true;
     }
-    const res = [[], []];
 
-    let nullCount = 0;
+    if (left[i] !== null) {
+      left.push(left[i].left, left[i].right);
+      right.push(right[i].right, right[i].left);
+    }
 
-    for (let j = 0; j < left.length; j++) {
-      const lVal = left[j];
-      let rVal = right[right.length - 1 - j];
-      if (lVal?.val != rVal?.val) {
-        return false;
-      }
-      rVal = right[j];
-      [lVal, rVal].forEach((node, i) => {
-        if (node) {
-          if (!node.left && i == 0) {
-            nullCount++;
-          }
-          if (!node.right && i == 0) {
-            nullCount++;
-          }
-          res[i].push(node.left);
-          res[i].push(node.right);
-        }
-      });
-    }
-    if (res[0].length != nullCount) {
-      tree[index] = res;
-    } else {
-      tree = 0;
-    }
+    i++;
   }
-  return true;
-}
+
+  return false;
+};
