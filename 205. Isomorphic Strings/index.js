@@ -9,7 +9,7 @@ var isIsomorphic = function (s, t) {
   }
 
   const store1 = new Map();
-  const store2 = new Map();
+  const store2 = new Set();
 
   for (let index = 0; index < s.length; index++) {
     const l1 = s[index];
@@ -17,20 +17,17 @@ var isIsomorphic = function (s, t) {
 
     if (store1.has(l1)) {
       const prev = store1.get(l1);
-      if (l2 != prev) {
+      if (l2 !== prev) {
         return false;
       }
     } else if (store2.has(l2)) {
-      const prev = store1.get(l2);
-      if (l1 != prev) {
-        return false;
-      }
+      return false;
     } else {
       store1.set(l1, l2);
-      store2.set(l2, l1);
+      store2.add(l2);
     }
   }
   return true;
 };
 
-isIsomorphic('bbbaaaba', 'aaabbbba');
+const res = isIsomorphic("bbbaaaba", "aaabbbba");

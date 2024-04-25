@@ -1,4 +1,4 @@
-var sumNumbers = function (root, prev = '') {
+var sumNumbers = function (root, prev = []) {
   const sum = prev + root.val;
   if (root.left && root.right) {
     return (
