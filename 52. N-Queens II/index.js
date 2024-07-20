@@ -3,85 +3,59 @@
  * @return {number}
  */
 var totalNQueens = function (n) {
-  const empty = new Set();
-  const filled = new Set();
+  const field = new Array(n).fill(0).map(() => new Array(n).fill(false));
 
-  for (let s = 0; s < n; s++) {
-    for (let m = 0; m < n; m++) {
-      empty.add([s, m].join());
-    }
-  }
-
-  let amount = 0;
-
-  for (const name of empty) {
-    const visited = new Set();
-
-    let e = new Set(empty);
-    let f = new Set(filled);
-    fill(name, empty, filled);
-
-    amount += count(n - 1, e, f, visited);
-  }
-
-  return amount; 
+  return count(0, n, field);
 };
 
-function count(n, empty, filled, visited) {
-  if (n === 0) {
+function count(row, n, field) {
+  if (n === row) {
     return 1;
   }
 
   let amount = 0;
 
-  for (const name of empty) {
-    if (!visited.has(name)) {
-      empty = new Set(empty);
-      filled = new Set(filled);
-      fill(name, empty, filled);
-      visited.add(name);
-
-      amount += count(n - 1, empty, filled, visited);
+  for (let col = 0; col < n; col++) {
+    if (isValid(field, row, col)) {
+      field[row][col] = true;
+      amount += count(row + 1, n, field);
+      field[row][col] = false;
     }
   }
 
   return amount;
 }
 
-function fill(name, empty, filled) {
-  const [n, m] = name.split(",").map((num) => parseInt(num));
-
-  empty.delete(name);
-  filled.add(name);
-
+function isValid(field, row, col) {
   const actions = [
-    [0, 1],
-    [1, 1],
-    [1, 0],
-    [1, -1],
-    [0, -1],
     [-1, -1],
     [-1, 0],
     [-1, 1],
+
+    // [0, 1],
+    // [1, 1],
+    // [1, 0],
+    // [1, -1],
+    // [0, -1],
   ];
 
-  actions.forEach(([a, b]) => {
-    let c = n + a;
-    let f = m + b;
+  for (let i = 0; i < actions.length; i++) {
+    const [a, b] = actions[i];
+    let c = row + a;
+    let f = col + b;
 
-    let corsStr = [c, f].join();
-
-    while (empty.has(corsStr) || filled.has(corsStr)) {
-      if (empty.has(corsStr)) {
-        empty.delete(corsStr);
-        filled.add(corsStr);
+    while (typeof field[c]?.[f] !== "undefined") {
+      if (field[c][f]) {
+        return false;
       }
+
       c += a;
       f += b;
-      corsStr = [c, f].join();
     }
-  });
+  }
+
+  return true;
 }
 
-const res = totalNQueens(4);
+const res = totalNQueens(1);
 console.log("🚀 ~ res:", res);

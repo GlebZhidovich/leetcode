@@ -19,43 +19,24 @@ function TreeNode(val, left, right) {
  * @return {boolean}
  */
 var isSameTree = function (p, q) {
-  if (!q && !p) {
-    return true;
-  }
-  if (q.val !== p.val) {
-    return false;
-  }
-  let cur = [[p], [q]];
-  let next = [[], []];
+  let cur = [[p, q]];
+  let next = [];
 
-  for (let index = 0; index < cur[0].length; ) {
-    const node = cur[0][index];
-    const node2 = cur[1][index];
+  while (cur.length !== 0) {
+    for (let i = 0; i < cur.length; i++) {
+      const [p, q] = cur[i];
 
-    if (node.left?.val === node2.left?.val) {
-      if (node.left) {
-        next[0].push(node.left);
-        next[1].push(node2.left);
+      if (p?.val !== q?.val) {
+        return false;
       }
-    } else {
-      return false;
-    }
-    if (node.right?.val === node2.right?.val) {
-      if (node.right) {
-        next[0].push(node.right);
-        next[1].push(node2.right);
+
+      if (p !== null) {
+        next.push([p.left, q.left], [p.right, q.right]);
       }
-    } else {
-      return false;
     }
 
-    if (index === cur[0].length - 1 && next[0].length) {
-      index = 0;
-      cur = next;
-      next = [[], []];
-    } else {
-      index++;
-    }
+    cur = next;
+    next = [];
   }
 
   return true;
